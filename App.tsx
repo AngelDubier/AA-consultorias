@@ -19,7 +19,14 @@ import {
   ShoppingBag,
   Utensils,
   Briefcase,
-  Info
+  Info,
+  Activity,
+  Search,
+  CheckCircle,
+  Zap,
+  Leaf,
+  Monitor,
+  Building
 } from 'lucide-react';
 
 import { Header } from './components/layout/Header';
@@ -31,7 +38,8 @@ import {
   SECTORS, 
   PROCESS, 
   FAQS, 
-  WHATSAPP_URL 
+  WHATSAPP_URL,
+  WHATSAPP_NUMBER
 } from './constants';
 
 const IconMap: Record<string, any> = {
@@ -45,12 +53,36 @@ const IconMap: Record<string, any> = {
   Truck,
   ShoppingBag,
   Utensils,
-  Briefcase
+  Briefcase,
+  Activity,
+  Search,
+  CheckCircle,
+  Zap,
+  Leaf,
+  Monitor,
+  Building
 };
 
+const SecurityPattern = () => (
+  <svg className="absolute inset-0 w-full h-full opacity-[0.03] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="security-icons" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+        <g stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-slate-900">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" transform="translate(10, 10) scale(0.8)" />
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" transform="translate(70, 20) scale(0.8)" />
+          <path d="M2 12h20M12 2v10M8 22v-6a4 4 0 0 1 8 0v6" transform="translate(20, 70) scale(0.8)" />
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" transform="translate(80, 80) scale(0.8)" />
+          <path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z" transform="translate(80, 80) scale(0.8)" />
+        </g>
+      </pattern>
+    </defs>
+    <rect x="0" y="0" width="100%" height="100%" fill="url(#security-icons)" />
+  </svg>
+);
+
 const Section: React.FC<{ id?: string, className?: string, children: React.ReactNode, title?: string, sub?: string }> = ({ id, className, children, title, sub }) => (
-  <section id={id} className={`py-24 px-4 scroll-mt-24 ${className}`}>
-    <div className="container mx-auto">
+  <section id={id} className={`py-24 px-4 scroll-mt-24 relative ${className}`}>
+    <div className="container mx-auto relative z-10">
       {(title || sub) && (
         <div className="text-center mb-16">
           {title && <h2 className="text-3xl md:text-5xl font-bold text-[#003366] mb-4">{title}</h2>}
@@ -112,11 +144,11 @@ const App: React.FC = () => {
             </div>
             
             <h1 className="text-5xl md:text-8xl font-black text-white mb-8 leading-[1.1] tracking-tight">
-              Diseño e Implementación <span className="text-[#FFD700]">SG-SST</span>
+              Servicios profesionales en <span className="text-[#FFD700]">Seguridad y Salud en el Trabajo</span> para empresas.
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto mb-12 leading-relaxed">
-              Protege a tu equipo y cumple con la normativa <span className="text-white font-bold">Decreto 1072/2015</span> con expertos en seguridad laboral en Medellín.
+              Cumplimiento del <span className="text-white font-bold">Decreto 1072 de 2015</span> y <span className="text-white font-bold">Resolución 0312 de 2019</span>. Protege a tu equipo y cumple con la normativa nacional con expertos en seguridad laboral en el Valle de Aburrá.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
@@ -172,7 +204,8 @@ const App: React.FC = () => {
       </InfiniteGrid>
 
       {/* Services Section */}
-      <Section id="servicios" title="Alcance del Servicio" sub="Nuestra metodología garantiza una transición suave hacia el cumplimiento normativo total.">
+      <Section id="servicios" className="bg-white" title="Alcance del Servicio" sub="Nuestra metodología garantiza una transición suave hacia el cumplimiento normativo total.">
+        <SecurityPattern />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {SERVICES.map((s, idx) => {
             const Icon = IconMap[s.icon];
@@ -216,13 +249,6 @@ const App: React.FC = () => {
             );
           })}
         </div>
-        <div className="mt-16 text-center">
-           <div className="inline-block p-6 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-lg">
-             <p className="text-slate-500 italic text-lg">
-               "Nuestra especialidad es el sector <span className="text-[#003366] font-bold">Metalmecánico</span>, donde los riesgos nivel IV y V requieren precisión absoluta."
-             </p>
-           </div>
-        </div>
       </Section>
 
       {/* Process Section */}
@@ -261,15 +287,18 @@ const App: React.FC = () => {
              </div>
              <div className="grid md:grid-cols-2 gap-16">
                <div className="flex flex-col justify-center">
-                  <h3 className="text-3xl font-black mb-4 text-[#003366]">Metalmecánica</h3>
+                  <h3 className="text-3xl font-black mb-4 text-[#003366]">Industrial / Manufactura</h3>
                   <p className="text-slate-500 mb-8 flex items-center gap-2">
-                    <Users size={18} /> Hasta 10 trabajadores • Riesgo IV/V
+                    <Users size={18} /> Nivel de riesgo: III - V
                   </p>
-                  <div className="text-6xl font-black text-[#003366] mb-4 tracking-tighter">$5.000.000 <span className="text-xl font-normal text-slate-400">COP</span></div>
-                  <p className="text-sm text-slate-400 mb-10 italic">*El valor final se determina según sector y número de centros de trabajo.</p>
+                  <div className="text-3xl md:text-4xl font-black text-[#003366] mb-4 tracking-tighter leading-tight">
+                    Sujeto a cotización
+                    <span className="block text-xl md:text-2xl font-normal text-slate-400 mt-2">tras diagnóstico inicial</span>
+                  </div>
+                  <p className="text-sm text-slate-400 mb-10 italic">*El valor de la inversión varía según el número de trabajadores, centros de trabajo y nivel de riesgo específico de la empresa.</p>
                   
                   <div className="space-y-5">
-                    {["Diseño documental completo", "Capacitación de personal", "Carga en plataforma MinTrabajo"].map((item, i) => (
+                    {["Diseño e implementación completa del SG-SST", "Gestión de matriz legal", "Preparación para auditoría externa"].map((item, i) => (
                       <div key={i} className="flex items-start gap-4">
                         <div className="mt-1 p-1 bg-green-500 rounded-full text-white">
                           <Check size={14} strokeWidth={4} />
@@ -307,7 +336,7 @@ const App: React.FC = () => {
              </div>
              
              <div className="mt-16">
-               <Button variant="accent" className="w-full py-8 text-2xl uppercase tracking-tighter" onClick={() => window.open(WHATSAPP_URL, '_blank')}>
+               <Button variant="accent" className="w-full py-8 text-2xl uppercase tracking-tighter" onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Hola, me gustaría solicitar un diagnóstico inicial para mi empresa y recibir una cotización personalizada.")}`, '_blank')}>
                 Solicitar Cotización Gratis
                </Button>
              </div>
@@ -316,6 +345,37 @@ const App: React.FC = () => {
       </Section>
 
       {/* FAQ Section */}
+      <Section id="nosotros" className="bg-slate-50 overflow-hidden" title="Información Corporativa" sub="Conoce a las expertas detrás de la seguridad de tu empresa.">
+        <SecurityPattern />
+        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 relative z-10">
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-[#FFD700]/20 text-[#003366] rounded-xl flex items-center justify-center mb-6">
+              <ShieldAlert size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-4 text-[#003366]">Misión</h3>
+            <p className="text-slate-600 leading-relaxed">Brindar soluciones integrales en SST, acompañando en el cumplimiento normativo y la prevención de riesgos.</p>
+          </div>
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-[#FFD700]/20 text-[#003366] rounded-xl flex items-center justify-center mb-6">
+              <CheckCircle2 size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-4 text-[#003366]">Visión</h3>
+            <p className="text-slate-600 leading-relaxed">Ser referente nacional en consultoría SST por calidad técnica y confianza.</p>
+          </div>
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="w-12 h-12 bg-[#FFD700]/20 text-[#003366] rounded-xl flex items-center justify-center mb-6">
+              <Users size={24} />
+            </div>
+            <h3 className="text-xl font-bold mb-4 text-[#003366]">Valores</h3>
+            <p className="text-slate-600 leading-relaxed">Compromiso, Ética profesional, Calidad, Responsabilidad y Cercanía.</p>
+          </div>
+        </div>
+        <div className="mt-12 text-center relative z-10">
+          <p className="text-lg text-slate-700 font-medium mb-2">Profesionales a cargo:</p>
+          <p className="text-2xl font-black text-[#003366]">Carina Andrea Serna Morales y Ana María Sánchez Pérez</p>
+        </div>
+      </Section>
+
       <Section id="faq" title="Resolviendo Dudas">
         <div className="max-w-3xl mx-auto space-y-6">
           {FAQS.map((faq, idx) => (
@@ -373,7 +433,7 @@ const App: React.FC = () => {
             <div>
               <h4 className="font-black mb-8 text-white uppercase tracking-[0.2em] text-xs">Navegación</h4>
               <ul className="space-y-4 text-slate-400 font-medium">
-                {['servicios', 'sectores', 'proceso', 'precio', 'faq'].map(id => (
+                {['servicios', 'sectores', 'proceso', 'precio', 'nosotros', 'faq'].map(id => (
                   <li key={id}>
                     <a 
                       href={`#${id}`} 
